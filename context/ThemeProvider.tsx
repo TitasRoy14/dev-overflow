@@ -1,5 +1,8 @@
 'use client';
 
+import { log } from 'console';
+import { usePathname } from 'next/navigation';
+import { Router } from 'next/router';
 import {
   createContext,
   useContext,
@@ -16,21 +19,25 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 const ThemeProvider = ({ children }: PropsWithChildren) => {
-  const [mode, setMode] = useState('');
+  const [mode, setMode] = useState('light');
+  const [themeColor, setThemeColor] = useState('');
+  const router = usePathname();
+  console.log(router);
 
   const handleThemeChange = () => {
     if (mode === 'dark') {
       setMode('light');
-      document.documentElement.classList.add('light');
+      return document.documentElement.classList.add('light');
     } else {
       setMode('dark');
-      document.documentElement.classList.add('dark');
+      return document.documentElement.classList.add('dark');
     }
   };
-
-  useEffect(() => {
-    handleThemeChange();
-  }, [mode]);
+  if (router === '/theme-change') {
+    useEffect(() => {
+      handleThemeChange();
+    }, [mode]);
+  }
 
   return (
     <ThemeContext.Provider value={{ mode, setMode }}>
